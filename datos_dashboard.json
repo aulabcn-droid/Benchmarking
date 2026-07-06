@@ -1,31 +1,66 @@
 {
-  "generated_at": "2026-07-06T10:00:20.217539Z",
+  "generated_at": "2026-07-06T11:04:33.194018Z",
+  "config_years": [
+    2024,
+    2025,
+    2026
+  ],
   "sources": [
+    {
+      "nombre": "Som Llar",
+      "url": "https://somllar.example.org/transparencia",
+      "timestamp": "2026-07-06T11:04:28.694074Z",
+      "error": "HTTPSConnectionPool(host='somllar.example.org', port=443): Max retries exceeded with url: /transparencia (Caused by NameResolutionError(\"HTTPSConnection(host='somllar.example.org', port=443): Failed to resolve 'somllar.example.org' ([Errno 11001] getaddrinfo failed)\"))",
+      "status_code": null,
+      "detected_years": [],
+      "found_years": [],
+      "snippet": ""
+    },
     {
       "nombre": "Habitat3",
       "url": "https://www.habitat3.cat/transparencia",
-      "timestamp": "2026-07-06T10:00:16.083171Z",
+      "timestamp": "2026-07-06T11:04:28.726061Z",
       "error": "404 Client Error: Not Found for url: https://www.habitat3.cat/transparencia",
       "status_code": null,
-      "found_2024": false,
+      "detected_years": [],
+      "found_years": [],
       "snippet": ""
     },
     {
       "nombre": "Provivienda",
       "url": "https://www.provivienda.org/transparencia/",
-      "timestamp": "2026-07-06T10:00:17.189322Z",
-      "error": "403 Client Error: Forbidden for url: https://www.provivienda.org/transparencia/",
+      "timestamp": "2026-07-06T11:04:29.828318Z",
+      "error": "404 Client Error: Not Found for url: https://provivienda.org/transparencia/",
       "status_code": null,
-      "found_2024": false,
+      "detected_years": [],
+      "found_years": [],
       "snippet": ""
     },
     {
       "nombre": "Fundació Mambré",
       "url": "https://fundaciomambre.org/ca/transparencia/",
-      "timestamp": "2026-07-06T10:00:17.498836Z",
+      "timestamp": "2026-07-06T11:04:31.021189Z",
       "status_code": 200,
-      "found_2024": true,
-      "snippet": "<!doctype html>\n<html lang=\"ca\" prefix=\"og: https://ogp.me/ns#\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\t<link rel=\"profile\" href=\"https://gmpg.org/xfn/11\">\n\t\n<!-- Search Engine Optimization by Rank Math - https://rankmath.com/ -->\n<title>Transparència - Mambre</title>\n<meta name=\"description\" content=\"Creiem que ser transparents és la "
+      "detected_years": [
+        1999,
+        2000,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025,
+        2026,
+        2062
+      ],
+      "found_years": [
+        2024,
+        2025,
+        2026
+      ],
+      "snippet": "<!doctype html>\n<html lang=\"ca\" prefix=\"og: https://ogp.me/ns#\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\t<link rel=\"profile\" href=\"https://gmpg.org/xfn/11\">\n\t\n<!-- Search Engine Optimization by Rank Math - https://rankmath.com/ -->\n<title>Transparència - Mambre</title>\n<meta name=\"description\" content=\"Creiem que ser transparents és la base per a construir confiança, fomentar la participació i aconseguir un impacte positiu en tot el que fem.\"/>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-video-preview:-1, max-ima"
     }
   ]
 }

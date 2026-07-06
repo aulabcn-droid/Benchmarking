@@ -64,6 +64,12 @@
                 <canvas id="chartDigital"></canvas>
             </div>
 
+            <!-- Gráfico Años Encontrados por Fuente -->
+            <div class="card">
+                <h2 class="text-xl font-bold mb-4 text-gray-700">Años encontrados por fuente</h2>
+                <canvas id="chartYears"></canvas>
+            </div>
+
             <!-- Comparador Cualitativo -->
             <div class="card overflow-auto">
                 <h2 class="text-xl font-bold mb-4 text-gray-700">Enfoque Estratégico (Propósito)</h2>
@@ -172,10 +178,13 @@
                 })
                 .then(json => {
                     const sources = json.sources || [];
+                    const configYears = json.config_years || [];
                     if (sources.length === 0) {
                         statusContainer.innerHTML = '<p class="text-gray-500">No hay entradas en datos_dashboard.json</p>';
                         return;
                     }
+
+                    // Construir tabla resumida
                     const table = document.createElement('table');
                     table.className = 'w-full text-sm border-collapse';
                     table.innerHTML = `
@@ -183,7 +192,7 @@
                             <tr class="text-left text-xs text-gray-600">
                                 <th>Fuente</th>
                                 <th>Estado</th>
-                                <th>Encontrado 2024</th>
+                                <th>Años encontrados</th>
                                 <th>Última comprobación</th>
                             </tr>
                         </thead>
@@ -194,17 +203,38 @@
                         const tr = document.createElement('tr');
                         tr.className = 'border-t';
                         const statusText = s.error ? `<span class="text-red-600">Error</span>` : `<span class="text-green-600">OK</span>`;
-                        const found = s.found_2024 ? `<span class="font-bold text-orange-600">Sí</span>` : 'No';
+                        const yearsFoundText = (s.found_years && s.found_years.length) ? s.found_years.join(', ') : '—';
                         tr.innerHTML = `
                             <td class="py-2">${s.nombre}</td>
                             <td class="py-2">${statusText}</td>
-                            <td class="py-2">${found}</td>
+                            <td class="py-2">${yearsFoundText}</td>
                             <td class="py-2">${s.timestamp || ''}</td>
                         `;
                         tbody.appendChild(tr);
                     });
                     statusContainer.innerHTML = '';
                     statusContainer.appendChild(table);
+
+                    // Construir datos para el gráfico de años
+                    const labels = sources.map(s => s.nombre);
+                    const colors = ['#1e3a8a','#3b82f6','#9333ea','#f59e0b','#10b981','#ef4444'];
+                    const datasets = configYears.map((y, idx) => ({
+                        label: String(y),
+                        data: sources.map(s => (s.found_years && s.found_years.includes(y)) ? 1 : 0),
+                        backgroundColor: colors[idx % colors.length]
+                    }));
+
+                    const ctx = document.getElementById('chartYears').getContext('2d');
+                    if (window._chartYears) window._chartYears.destroy();
+                    window._chartYears = new Chart(ctx, {
+                        type: 'bar',
+                        data: { labels, datasets },
+                        options: {
+                            responsive: true,
+                            plugins: { legend: { position: 'top' } },
+                            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                        }
+                    });
                 })
                 .catch(err => {
                     statusContainer.innerHTML = `<div class="text-red-600">No se pudo cargar datos_dashboard.json: ${err.message}</div>`;

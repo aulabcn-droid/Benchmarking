@@ -1,0 +1,9 @@
+{
+  "years": [2024, 2025, 2026],
+  "sources": [
+    { "nombre": "Som Llar", "url": "https://somllar.example.org/transparencia" },
+    { "nombre": "Habitat3", "url": "https://www.habitat3.cat/transparencia" },
+    { "nombre": "Provivienda", "url": "https://www.provivienda.org/transparencia/" },
+    { "nombre": "Fundació Mambré", "url": "https://fundaciomambre.org/ca/transparencia/" }
+  ]
+}
