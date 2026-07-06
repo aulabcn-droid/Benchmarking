@@ -104,19 +104,19 @@
             }
 
             // Configuración de Datos
-            const labels = ['Som Llar', 'Habitat3', 'Mambré', 'FFHS', 'Provivienda'];
-            const ingresos = [4095600, 8536803, 3872068, 1096398, 33389719];
-            const staff = [57, 45, 22, 25, 545];
-            const viviendas = [189, 500, 402, 461, 2939]; // Estimación Habitat3 segun histórico
+            const fallbackLabels = ['Som Llar', 'Habitat3', 'Mambré', 'FFHS', 'Provivienda'];
+            const fallbackIngresos = [4095600, 8536803, 3872068, 1096398, 33389719];
+            const fallbackPersonal = [57, 45, 22, 25, 545];
+            const fallbackViviendas = [189, 500, 402, 461, 2939];
 
             // Chart Ingresos
-            new Chart(document.getElementById('chartIngresos'), {
+            window._chartIngresos = new Chart(document.getElementById('chartIngresos'), {
                 type: 'bar',
                 data: {
-                    labels: labels,
+                    labels: fallbackLabels,
                     datasets: [{
                         label: 'Ingresos 2023',
-                        data: ingresos,
+                        data: fallbackIngresos,
                         backgroundColor: ['#1e3a8a', '#3b82f6', '#3b82f6', '#3b82f6', '#3b82f6']
                     }]
                 },
@@ -124,30 +124,37 @@
             });
 
             // Chart Personal/Viviendas
-            new Chart(document.getElementById('chartPersonal'), {
+            window._chartPersonal = new Chart(document.getElementById('chartPersonal'), {
                 type: 'bar',
                 data: {
-                    labels: labels,
+                    labels: fallbackLabels,
                     datasets: [
                         {
                             label: 'Personal',
-                            data: staff,
+                            data: fallbackPersonal,
                             backgroundColor: '#9333ea'
                         },
                         {
                             label: 'Viviendas',
-                            data: viviendas,
+                            data: fallbackViviendas,
                             type: 'line',
                             borderColor: '#f59e0b',
                             borderWidth: 3,
                             fill: false
                         }
                     ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'top' } },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
                 }
             });
 
             // Chart Digital
-            new Chart(document.getElementById('chartDigital'), {
+            window._chartDigital = new Chart(document.getElementById('chartDigital'), {
                 type: 'radar',
                 data: {
                     labels: ['SEO', 'Rendimiento PC', 'Autoridad Dominio', 'Accesibilidad'],
@@ -216,11 +223,14 @@
                     statusContainer.appendChild(table);
 
                     // Construir datos para el gráfico de años
-                    const labels = sources.map(s => s.nombre);
+                    const sourceNames = ['Som Llar', 'Habitat3', 'Mambré', 'FFHS', 'Provivienda'];
                     const colors = ['#1e3a8a','#3b82f6','#9333ea','#f59e0b','#10b981','#ef4444'];
                     const datasets = configYears.map((y, idx) => ({
                         label: String(y),
-                        data: sources.map(s => (s.found_years && s.found_years.includes(y)) ? 1 : 0),
+                        data: sourceNames.map(name => {
+                            const source = sources.find(s => s.nombre === name);
+                            return (source && source.found_years && source.found_years.includes(y)) ? 1 : 0;
+                        }),
                         backgroundColor: colors[idx % colors.length]
                     }));
 
@@ -228,13 +238,62 @@
                     if (window._chartYears) window._chartYears.destroy();
                     window._chartYears = new Chart(ctx, {
                         type: 'bar',
-                        data: { labels, datasets },
+                        data: { labels: sourceNames, datasets },
                         options: {
                             responsive: true,
                             plugins: { legend: { position: 'top' } },
                             scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
                         }
                     });
+
+                    // Actualizar los gráficos con métricas extraíbles cuando estén disponibles
+                    const fallbackIngresos = {
+                        'Som Llar': 4095600,
+                        'Habitat3': 8536803,
+                        'Mambré': 3872068,
+                        'FFHS': 1096398,
+                        'Provivienda': 33389719
+                    };
+                    const fallbackPersonal = {
+                        'Som Llar': 57,
+                        'Habitat3': 45,
+                        'Mambré': 22,
+                        'FFHS': 25,
+                        'Provivienda': 545
+                    };
+                    const fallbackViviendas = {
+                        'Som Llar': 189,
+                        'Habitat3': 500,
+                        'Mambré': 402,
+                        'FFHS': 461,
+                        'Provivienda': 2939
+                    };
+                    const metricsByName = Object.fromEntries(sources.map(s => [s.nombre, s.metrics || {}]));
+
+                    const valoresIngresos = sourceNames.map(name => {
+                        const value = metricsByName[name]?.ingresos;
+                        return value != null ? value : fallbackIngresos[name] || 0;
+                    });
+                    const valoresPersonal = sourceNames.map(name => {
+                        const value = metricsByName[name]?.personal;
+                        return value != null ? value : fallbackPersonal[name] || 0;
+                    });
+                    const valoresViviendas = sourceNames.map(name => {
+                        const value = metricsByName[name]?.viviendas;
+                        return value != null ? value : fallbackViviendas[name] || 0;
+                    });
+
+                    if (window._chartIngresos) {
+                        window._chartIngresos.data.labels = sourceNames;
+                        window._chartIngresos.data.datasets[0].data = valoresIngresos;
+                        window._chartIngresos.update();
+                    }
+                    if (window._chartPersonal) {
+                        window._chartPersonal.data.labels = sourceNames;
+                        window._chartPersonal.data.datasets[0].data = valoresPersonal;
+                        window._chartPersonal.data.datasets[1].data = valoresViviendas;
+                        window._chartPersonal.update();
+                    }
                 })
                 .catch(err => {
                     statusContainer.innerHTML = `<div class="text-red-600">No se pudo cargar datos_dashboard.json: ${err.message}</div>`;

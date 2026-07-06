@@ -1,45 +1,88 @@
 {
-  "generated_at": "2026-07-06T11:04:33.194018Z",
+  "generated_at": "2026-07-06T11:34:50.666905Z",
   "config_years": [
     2024,
     2025,
     2026
   ],
+  "metrics_config": [
+    {
+      "key": "ingresos",
+      "label": "Ingresos",
+      "unit": "€",
+      "patterns": [
+        "ingresos?\\s*[:\\-–]?\\s*([0-9][0-9\\.,]+)\\s*€",
+        "([0-9][0-9\\.,]+)\\s*€\\s*(?:de\\s+ingresos)?"
+      ],
+      "year_patterns": [
+        "{year}.{0,60}?ingresos?\\s*[:\\-–]?\\s*([0-9][0-9\\.,]+)\\s*€",
+        "ingresos?.{0,60}?{year}.{0,30}?([0-9][0-9\\.,]+)\\s*€"
+      ]
+    },
+    {
+      "key": "personal",
+      "label": "Personal",
+      "unit": "",
+      "patterns": [
+        "(\\d{1,4})\\s*(?:empleados|personal|personas|trabajadores)",
+        "personal\\s*[:\\-–]?\\s*(\\d{1,4})"
+      ],
+      "year_patterns": [
+        "{year}.{0,60}?personal\\s*[:\\-–]?\\s*(\\d{1,4})",
+        "personal.{0,60}?{year}.{0,30}?(\\d{1,4})"
+      ]
+    },
+    {
+      "key": "viviendas",
+      "label": "Viviendas",
+      "unit": "",
+      "patterns": [
+        "(\\d{1,4})\\s*(?:viviendas|hogares|pisos|alojamientos|apartamentos)",
+        "viviendas\\s*[:\\-–]?\\s*(\\d{1,4})"
+      ],
+      "year_patterns": [
+        "{year}.{0,60}?viviendas\\s*[:\\-–]?\\s*(\\d{1,4})",
+        "viviendas.{0,60}?{year}.{0,30}?(\\d{1,4})"
+      ]
+    }
+  ],
   "sources": [
     {
       "nombre": "Som Llar",
       "url": "https://somllar.example.org/transparencia",
-      "timestamp": "2026-07-06T11:04:28.694074Z",
+      "timestamp": "2026-07-06T11:34:44.793849Z",
       "error": "HTTPSConnectionPool(host='somllar.example.org', port=443): Max retries exceeded with url: /transparencia (Caused by NameResolutionError(\"HTTPSConnection(host='somllar.example.org', port=443): Failed to resolve 'somllar.example.org' ([Errno 11001] getaddrinfo failed)\"))",
       "status_code": null,
       "detected_years": [],
       "found_years": [],
+      "metrics": {},
+      "metrics_by_year": {
+        "2024": {},
+        "2025": {},
+        "2026": {}
+      },
       "snippet": ""
     },
     {
       "nombre": "Habitat3",
       "url": "https://www.habitat3.cat/transparencia",
-      "timestamp": "2026-07-06T11:04:28.726061Z",
+      "timestamp": "2026-07-06T11:34:44.835130Z",
       "error": "404 Client Error: Not Found for url: https://www.habitat3.cat/transparencia",
       "status_code": null,
       "detected_years": [],
       "found_years": [],
+      "metrics": {},
+      "metrics_by_year": {
+        "2024": {},
+        "2025": {},
+        "2026": {}
+      },
       "snippet": ""
     },
     {
-      "nombre": "Provivienda",
-      "url": "https://www.provivienda.org/transparencia/",
-      "timestamp": "2026-07-06T11:04:29.828318Z",
-      "error": "404 Client Error: Not Found for url: https://provivienda.org/transparencia/",
-      "status_code": null,
-      "detected_years": [],
-      "found_years": [],
-      "snippet": ""
-    },
-    {
-      "nombre": "Fundació Mambré",
+      "nombre": "Mambré",
       "url": "https://fundaciomambre.org/ca/transparencia/",
-      "timestamp": "2026-07-06T11:04:31.021189Z",
+      "timestamp": "2026-07-06T11:34:46.396560Z",
       "status_code": 200,
       "detected_years": [
         1999,
@@ -60,7 +103,61 @@
         2025,
         2026
       ],
+      "metrics": {
+        "ingresos": 657000.0,
+        "personal": null,
+        "viviendas": null
+      },
+      "metrics_by_year": {
+        "2024": {
+          "ingresos": null,
+          "personal": null,
+          "viviendas": null
+        },
+        "2025": {
+          "ingresos": null,
+          "personal": null,
+          "viviendas": null
+        },
+        "2026": {
+          "ingresos": null,
+          "personal": null,
+          "viviendas": null
+        }
+      },
       "snippet": "<!doctype html>\n<html lang=\"ca\" prefix=\"og: https://ogp.me/ns#\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\t<link rel=\"profile\" href=\"https://gmpg.org/xfn/11\">\n\t\n<!-- Search Engine Optimization by Rank Math - https://rankmath.com/ -->\n<title>Transparència - Mambre</title>\n<meta name=\"description\" content=\"Creiem que ser transparents és la base per a construir confiança, fomentar la participació i aconseguir un impacte positiu en tot el que fem.\"/>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-video-preview:-1, max-ima"
+    },
+    {
+      "nombre": "FFHS",
+      "url": "https://ffhs.example.org/transparencia/",
+      "timestamp": "2026-07-06T11:34:49.571559Z",
+      "error": "HTTPSConnectionPool(host='ffhs.example.org', port=443): Max retries exceeded with url: /transparencia/ (Caused by NameResolutionError(\"HTTPSConnection(host='ffhs.example.org', port=443): Failed to resolve 'ffhs.example.org' ([Errno 11001] getaddrinfo failed)\"))",
+      "status_code": null,
+      "detected_years": [],
+      "found_years": [],
+      "metrics": {},
+      "metrics_by_year": {
+        "2024": {},
+        "2025": {},
+        "2026": {}
+      },
+      "snippet": ""
+    },
+    {
+      "nombre": "Provivienda",
+      "url": "https://www.provivienda.org/transparencia/",
+      "timestamp": "2026-07-06T11:34:49.611304Z",
+      "error": "404 Client Error: Not Found for url: https://provivienda.org/transparencia/",
+      "status_code": null,
+      "detected_years": [],
+      "found_years": [],
+      "metrics": {},
+      "metrics_by_year": {
+        "2024": {},
+        "2025": {},
+        "2026": {}
+      },
+      "snippet": ""
     }
   ]
 }

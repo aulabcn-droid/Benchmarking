@@ -24,22 +24,75 @@ def load_config():
                 cfg = json.load(f)
             years = cfg.get('years', DEFAULT_YEARS)
             sources = cfg.get('sources', DEFAULT_SOURCES)
-            return years, sources
+            metrics = cfg.get('metrics', [])
+            return years, sources, metrics
         except Exception:
             pass
-    return DEFAULT_YEARS, DEFAULT_SOURCES
+    return DEFAULT_YEARS, DEFAULT_SOURCES, []
 
 
-def extract_found_years(text, years):
-    found = []
-    for y in years:
-        if str(y) in text:
-            found.append(int(y))
-    return found
+def parse_number(value):
+    if value is None:
+        return None
+    normalized = value.strip().replace(' ', '')
+    if ',' in normalized and '.' in normalized:
+        if normalized.find('.') < normalized.find(','):
+            normalized = normalized.replace('.', '').replace(',', '.')
+        else:
+            normalized = normalized.replace(',', '')
+    elif ',' in normalized:
+        normalized = normalized.replace('.', '').replace(',', '.')
+    else:
+        normalized = normalized.replace('.', '')
+    try:
+        if '.' in normalized:
+            return float(normalized)
+        return int(normalized)
+    except ValueError:
+        return None
+
+
+def search_patterns(text, patterns):
+    for pattern in patterns:
+        try:
+            match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
+        except re.error:
+            continue
+        if match and match.groups():
+            number = parse_number(match.group(1))
+            if number is not None:
+                return number
+    return None
+
+
+def extract_metrics(text, metrics_config, years):
+    metrics = {}
+    metrics_by_year = {str(year): {} for year in years}
+
+    for metric in metrics_config:
+        key = metric['key']
+        patterns = metric.get('patterns', [])
+        year_patterns = metric.get('year_patterns', [])
+        metrics[key] = search_patterns(text, patterns)
+
+        for year in years:
+            year_key = str(year)
+            year_specific = None
+            for pattern in year_patterns:
+                try:
+                    formatted = pattern.format(year=year)
+                except Exception:
+                    formatted = pattern
+                year_specific = search_patterns(text, [formatted])
+                if year_specific is not None:
+                    break
+            metrics_by_year[year_key][key] = year_specific
+
+    return metrics, metrics_by_year
 
 
 def check_updates():
-    years, sources = load_config()
+    years, sources, metrics_config = load_config()
     results = []
     year_pattern = re.compile(r"\b(19|20)\d{2}\b")
 
@@ -54,16 +107,18 @@ def check_updates():
             resp.raise_for_status()
             text = resp.text
             item['status_code'] = resp.status_code
-            # detectamos años disponibles en la página y los que nos interesan
             detected_years = sorted(set([int(m.group(0)) for m in year_pattern.finditer(text)]))
             item['detected_years'] = detected_years
             item['found_years'] = [y for y in years if str(y) in text]
+            item['metrics'], item['metrics_by_year'] = extract_metrics(text, metrics_config, years)
             item['snippet'] = text[:600]
         except Exception as e:
             item['error'] = str(e)
             item['status_code'] = None
             item['detected_years'] = []
             item['found_years'] = []
+            item['metrics'] = {}
+            item['metrics_by_year'] = {str(year): {} for year in years}
             item['snippet'] = ''
 
         results.append(item)
@@ -72,6 +127,7 @@ def check_updates():
     payload = {
         "generated_at": datetime.utcnow().isoformat() + 'Z',
         "config_years": years,
+        "metrics_config": metrics_config,
         "sources": results
     }
     with open(out_path, 'w', encoding='utf-8') as f:
