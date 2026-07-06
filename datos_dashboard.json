@@ -1,0 +1,31 @@
+{
+  "generated_at": "2026-07-06T10:00:20.217539Z",
+  "sources": [
+    {
+      "nombre": "Habitat3",
+      "url": "https://www.habitat3.cat/transparencia",
+      "timestamp": "2026-07-06T10:00:16.083171Z",
+      "error": "404 Client Error: Not Found for url: https://www.habitat3.cat/transparencia",
+      "status_code": null,
+      "found_2024": false,
+      "snippet": ""
+    },
+    {
+      "nombre": "Provivienda",
+      "url": "https://www.provivienda.org/transparencia/",
+      "timestamp": "2026-07-06T10:00:17.189322Z",
+      "error": "403 Client Error: Forbidden for url: https://www.provivienda.org/transparencia/",
+      "status_code": null,
+      "found_2024": false,
+      "snippet": ""
+    },
+    {
+      "nombre": "Fundació Mambré",
+      "url": "https://fundaciomambre.org/ca/transparencia/",
+      "timestamp": "2026-07-06T10:00:17.498836Z",
+      "status_code": 200,
+      "found_2024": true,
+      "snippet": "<!doctype html>\n<html lang=\"ca\" prefix=\"og: https://ogp.me/ns#\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\t<link rel=\"profile\" href=\"https://gmpg.org/xfn/11\">\n\t\n<!-- Search Engine Optimization by Rank Math - https://rankmath.com/ -->\n<title>Transparència - Mambre</title>\n<meta name=\"description\" content=\"Creiem que ser transparents és la "
+    }
+  ]
+}

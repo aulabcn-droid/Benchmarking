@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Comparativo Som Llar</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .card { background: white; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); padding: 20px; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <!-- Header -->
+    <header class="bg-blue-900 text-white p-6 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold italic">Som Llar | Business Intelligence</h1>
+            <span class="text-sm opacity-75">Comparativa Sectorial 2023</span>
+        </div>
+    </header>
+
+    <main class="container mx-auto py-8 px-4">
+        <div id="js-warning" class="hidden max-w-4xl mx-auto mb-8 rounded border border-red-200 bg-red-50 p-4 text-red-700">
+            <strong>Atención:</strong> Algo impide cargar los gráficos. Abre la consola del navegador para ver errores y prueba con otro navegador.
+        </div>
+        
+        <!-- KPIs Rápidos -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="card border-l-4 border-blue-500">
+                <p class="text-gray-500 text-sm uppercase font-bold">Vuestro Ingreso (2023)</p>
+                <p class="text-2xl font-black">4.095.600 €</p>
+            </div>
+            <div class="card border-l-4 border-green-500">
+                <p class="text-gray-500 text-sm uppercase font-bold">Personal (Som Llar)</p>
+                <p class="text-2xl font-black">57 <span class="text-sm font-normal text-gray-400">empleados</span></p>
+            </div>
+            <div class="card border-l-4 border-purple-500">
+                <p class="text-gray-500 text-sm uppercase font-bold">Viviendas Gestionadas</p>
+                <p class="text-2xl font-black">189</p>
+            </div>
+            <div class="card border-l-4 border-yellow-500">
+                <p class="text-gray-500 text-sm uppercase font-bold">Ratio Personas/Vivienda</p>
+                <p class="text-2xl font-black">2.43</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Gráfico Ingresos -->
+            <div class="card">
+                <h2 class="text-xl font-bold mb-4 text-gray-700">Comparativa Ingresos 2023 (€)</h2>
+                <canvas id="chartIngresos"></canvas>
+            </div>
+
+            <!-- Gráfico Personal vs Viviendas -->
+            <div class="card">
+                <h2 class="text-xl font-bold mb-4 text-gray-700">Personal (Barras) vs Viviendas (Línea)</h2>
+                <canvas id="chartPersonal"></canvas>
+            </div>
+
+            <!-- Gráfico Presencia Digital -->
+            <div class="card">
+                <h2 class="text-xl font-bold mb-4 text-gray-700">Salud Digital (Puntuación SEO/Web)</h2>
+                <canvas id="chartDigital"></canvas>
+            </div>
+
+            <!-- Comparador Cualitativo -->
+            <div class="card overflow-auto">
+                <h2 class="text-xl font-bold mb-4 text-gray-700">Enfoque Estratégico (Propósito)</h2>
+                <div class="space-y-4 text-sm">
+                    <div class="bg-blue-50 p-3 rounded">
+                        <span class="font-bold">Som Llar:</span> Enfocament feminista, empoderament i inclusió residencial.
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded text-gray-600">
+                        <span class="font-bold italic">Habitat3:</span> Gestora impulsada des del tercer sector, gestió d'habitatge social.
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded text-gray-600">
+                        <span class="font-bold italic">Provivienda:</span> Provisió d'allotjament amb intervenció social i incidència.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estado del automatismo -->
+            <div class="card overflow-auto">
+                <h2 class="text-xl font-bold mb-4 text-gray-700">Estado Automatismo (fuentes)</h2>
+                <div id="scraper-status" class="text-sm">
+                    <p class="text-gray-500">Cargando estado del scraper...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof Chart === 'undefined') {
+                document.getElementById('js-warning').classList.remove('hidden');
+                return;
+            }
+
+            // Configuración de Datos
+            const labels = ['Som Llar', 'Habitat3', 'Mambré', 'FFHS', 'Provivienda'];
+            const ingresos = [4095600, 8536803, 3872068, 1096398, 33389719];
+            const staff = [57, 45, 22, 25, 545];
+            const viviendas = [189, 500, 402, 461, 2939]; // Estimación Habitat3 segun histórico
+
+            // Chart Ingresos
+            new Chart(document.getElementById('chartIngresos'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ingresos 2023',
+                        data: ingresos,
+                        backgroundColor: ['#1e3a8a', '#3b82f6', '#3b82f6', '#3b82f6', '#3b82f6']
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+
+            // Chart Personal/Viviendas
+            new Chart(document.getElementById('chartPersonal'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Personal',
+                            data: staff,
+                            backgroundColor: '#9333ea'
+                        },
+                        {
+                            label: 'Viviendas',
+                            data: viviendas,
+                            type: 'line',
+                            borderColor: '#f59e0b',
+                            borderWidth: 3,
+                            fill: false
+                        }
+                    ]
+                }
+            });
+
+            // Chart Digital
+            new Chart(document.getElementById('chartDigital'), {
+                type: 'radar',
+                data: {
+                    labels: ['SEO', 'Rendimiento PC', 'Autoridad Dominio', 'Accesibilidad'],
+                    datasets: [
+                        {
+                            label: 'Som Llar',
+                            data: [85, 78, 5, 58],
+                            borderColor: '#1e3a8a',
+                            backgroundColor: 'rgba(30, 58, 138, 0.2)'
+                        },
+                        {
+                            label: 'Media Competencia',
+                            data: [98, 70, 30, 65],
+                            borderColor: '#94a3b8',
+                            borderDash: [5, 5],
+                            fill: false
+                        }
+                    ]
+                }
+            });
+
+            // Cargar estado generado por el automatismo (datos_dashboard.json)
+            const statusContainer = document.getElementById('scraper-status');
+            fetch('datos_dashboard.json', {cache: 'no-store'})
+                .then(resp => {
+                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                    return resp.json();
+                })
+                .then(json => {
+                    const sources = json.sources || [];
+                    if (sources.length === 0) {
+                        statusContainer.innerHTML = '<p class="text-gray-500">No hay entradas en datos_dashboard.json</p>';
+                        return;
+                    }
+                    const table = document.createElement('table');
+                    table.className = 'w-full text-sm border-collapse';
+                    table.innerHTML = `
+                        <thead>
+                            <tr class="text-left text-xs text-gray-600">
+                                <th>Fuente</th>
+                                <th>Estado</th>
+                                <th>Encontrado 2024</th>
+                                <th>Última comprobación</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    `;
+                    const tbody = table.querySelector('tbody');
+                    sources.forEach(s => {
+                        const tr = document.createElement('tr');
+                        tr.className = 'border-t';
+                        const statusText = s.error ? `<span class="text-red-600">Error</span>` : `<span class="text-green-600">OK</span>`;
+                        const found = s.found_2024 ? `<span class="font-bold text-orange-600">Sí</span>` : 'No';
+                        tr.innerHTML = `
+                            <td class="py-2">${s.nombre}</td>
+                            <td class="py-2">${statusText}</td>
+                            <td class="py-2">${found}</td>
+                            <td class="py-2">${s.timestamp || ''}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                    statusContainer.innerHTML = '';
+                    statusContainer.appendChild(table);
+                })
+                .catch(err => {
+                    statusContainer.innerHTML = `<div class="text-red-600">No se pudo cargar datos_dashboard.json: ${err.message}</div>`;
+                    document.getElementById('js-warning').classList.remove('hidden');
+                });
+        });
+    </script>
+</body>
+</html>
